@@ -1,0 +1,60 @@
+@{
+    ViewData["Title"] = "My Events";
+}
+
+
+<div class="row">
+ 
+    <div class="col-8">
+        <div class="card border-0  h-100">
+            
+        <div class="h3 pb-1">Upcomming Events</div>
+            @foreach(var item in ViewBag.UpcommingBookEvents)
+            {
+                <div class="card pl-5 pt-1 pb-1 m-2 rounded-pill justify-content-evenly">
+
+                        <div class="row pb-1 pt-2">
+
+                            <div class="col-8 h5">
+                                <a href='@Url.Action("BookEvent", "User", new { id = item.Id })'>@item.Title</a>
+                            </div>
+                            <div class="col-2 pl-3 pr-3 pb-1 pt-1 btn btn-info rounded-pill bg-white text-info">
+                                @(item.Type == 0 ? "Public" : "Private")
+                            </div>
+                            <div class="col-2">
+                                <a href='@Url.Action("Edit", "User", new { id = item.Id })'><i class="far fa-edit"></i></a> 
+                            </div>
+                        </div> 
+
+                        
+                        <div class="row pb-2">
+                            <div class="col-6">
+                                Event Date: @item.Date.ToString("MMMM dd, yyyy")
+                            </div>
+                        </div>
+                        
+
+                </div>
+                
+            }
+
+           
+        </div>
+    </div>
+
+
+    <div class="col-4">
+        <div class="h5">Past Events</div>
+
+        <div class="card border-0">
+            @foreach(var item in ViewBag.PastBookEvents)
+            {
+                <div class="card p-3 m-1  rounded-pill "> 
+                    <a href='@Url.Action("BookEvent", "User", new { id = item.Id })'>@item.Title</a>
+                </div>
+            }
+
+
+        </div>
+    </div>
+</div>

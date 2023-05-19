@@ -1,0 +1,155 @@
+@model BookStore.Models.Comment.CommentModel;
+@using Microsoft.AspNetCore.Identity
+@using BookStore.Models.User
+@inject SignInManager<UserModel> SignInManager
+@inject UserManager<UserModel> UserManager
+
+@{
+    ViewData["Title"] = @ViewBag.BookEvent.Title;
+}
+
+<div class="card h-100 w-100">
+    <div class="card-header h3">
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        @ViewBag.BookEvent.Title
+    </div>
+
+    <div class="card-body">
+        <div class="row pb-2">
+            <div class="col-4">
+                Event Date
+            </div>
+            <div class="col-8">
+                @ViewBag.BookEvent.Date.ToString("MMMM dd, yyyy")
+            </div> 
+        </div>
+
+        <div class="row pb-2">
+            <div class="col-4">
+                Location
+            </div>
+            <div class="col-8">
+                @ViewBag.BookEvent.Location
+            </div> 
+        </div>
+
+        <div class="row pb-2">
+            <div class="col-4">
+                Start Time
+            </div>
+            <div class="col-8">
+                @ViewBag.BookEvent.StartTime.ToString("H:mm")
+            </div> 
+        </div>
+
+
+        <div class="row pb-2">
+            <div class="col-4">
+                Public/Private
+            </div>
+            <div class="col-8">
+                @(ViewBag.BookEvent.Type == 0 ? "Public": "Private")
+            </div> 
+        </div>
+
+        @if(ViewBag.BookEvent.Duration != null)
+        {
+            <div class="row pb-2">
+                <div class="col-4">
+                    Duration
+                </div>
+                <div class="col-8">
+                    @ViewBag.BookEvent.Duration hrs
+                </div> 
+            </div>
+        }
+
+
+        @if(ViewBag.BookEvent.Description != null)
+        {
+            <div class="row pb-2">
+                <div class="col-4">
+                    Description
+                </div>
+                <div class="col-8">
+                    @ViewBag.BookEvent.Description
+                </div> 
+            </div>
+        }
+
+        @if(ViewBag.BookEvent.OtherDetails != null)
+        {
+            <div class="row pb-2">
+                <div class="col-4">
+                    Other Details
+                </div>
+                <div class="col-8">
+                    @ViewBag.BookEvent.OtherDetails 
+                </div> 
+            </div>
+        }
+
+        @if(ViewBag.BookEvent.InviteByEmail != null && ViewBag.BookEvent.InviteByEmail != "")
+        {
+            <div class="row pb-2">
+                <div class="col-4">
+                    Invites
+                </div>
+                
+                <div class="col-8">
+                    @foreach (var item in  ViewBag.BookEvent.InviteByEmail.Split(","))
+                    {
+                        <span class="border p-1 m-1 rounded-pill"> @item </span>   
+                    }
+                </div> 
+            </div>
+        }
+    </div>
+</div>
+
+
+
+<div class="card h-100 w-100">
+    <div class="card-body">
+
+        @if (SignInManager.IsSignedIn(User))
+        {    
+            <form method="post" asp-controller="User" asp-action="Comment" asp-route-id="@ViewBag.BookEvent.Id">
+                <div class="row pb-2">
+                    <div class="col-11">
+                            <input asp-for="Text" class="form-control" />
+                            <span asp-validation-for="Text" class="text-danger"></span>
+                    </div>
+                    <div class="col-1">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-paper-plane fa-lg"></i>
+                        </button>
+                    </div>
+                </div>
+            </form>
+        }
+
+        @foreach (var item in ViewBag.BookEvent.Comments)
+        {
+            <div class="pb-2">
+                    <div class="text-sm-left font-weight-light">
+                        <i class="fas fa-user-alt fa-lt"></i>
+                        @item.User.FirstName  @item.User.LastName
+                    </div>
+                    <div class="btn @(User.Identity.Name == item.User.Email ? "btn-primary": "btn-secondary") rounded-pill ">
+                        
+                        <div class="text-sm-left">
+                            @item.Text
+                        </div> 
+                    </div>
+                    <div class="text-sm-right font-weight-light">
+                        @item.CreatedAt.ToString("H:mm  MMMM dd, yyyy")
+                    </div>
+            </div>
+        }
+    </div>
+</div>
+
+
+
+
